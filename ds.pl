@@ -82,6 +82,56 @@
 	lock('gembok', terkunci).
 	lock('password', terkunci).
 
+/* MAP */
+map1 :-
+	write('                                                        1ST FLOOR.'), nl,
+	write('|----------------------------------------------------------------|'), nl,
+	write('|       |  WC  |  WC  | Gudang [] TU  |  Ruang  | Tangga |       |'), nl,
+	write('|       | PRIA |WANITA|        |      |  Kepsek |        |       |'), nl,
+	write('|       |--[]-----[]------[]------[]-------[]-------[]---|       |'), nl,
+	write('|       |                             |                  |       |'), nl,
+	write('|   P   []            HALL            []                 | Ruang |'), nl,
+	write('|   A   |                             |       LOBBY      | Guru  |'), nl,
+	write('|   R   |------[]--------------[]-----|                  |       |'), nl,
+	write('|   K   |               |             |                 []       |'), nl,
+	write('|   I   |   KELAS 1A    |   KELAS 1B  |                  |       |'), nl,
+	write('|   R   |--------------------------------------------[]----------|'), nl,
+	write('|   A   |                                                        |'), nl,
+	write('|   N   |                                                        |'), nl,
+	write('|       |                      HALAMAN                           |'), nl,
+	write('|       |                                                        |'), nl,
+	write('|       |                                                        |'), nl,
+	write('|       |                                                        |'), nl,
+	write('|------------------------------------------------------------[]--|'), nl.
+
+map2 :-
+	write('                                                        2ND FLOOR.'), nl,
+	write('|----------------------------------------------------------------|'), nl,
+	write('|  WC  |  WC  |      Ruang     |  Laboratorium  | Tangga |       |'), nl,
+	write('| PRIA |WANITA|    Multimedia  |      KIMIA     |        |       |'), nl,
+	write('|-[]-----[]----------------[]----------------[]-----[]---|   P   |'), nl,
+	write('|                                                        |   E   |'), nl,
+	write('|                          HALL                          []  R   |'), nl,
+	write('|                                                        |   P   |'), nl,
+	write('|-[]-------------------[]----------------[]--------------|   U   |'), nl,
+	write('|                    |                 |                 |   S   |'), nl,
+	write('|      KELAS 3       |    KELAS 2A     |    KELAS 2B     |       |'), nl,
+	write('|----------------------------------------------------------------|'), nl.
+
+map3 :-
+	write('                                                         ROOF TOP.'), nl,
+	write('|----------------------------------------------------------------|'), nl,
+	write('|                                                                |'), nl,
+	write('|                                                                |'), nl,
+	write('|                                                                |'), nl,
+	write('|                                                                |'), nl,
+	write('|                            ROOF TOP                            |'), nl,
+	write('|                                                                |'), nl,
+	write('|                                                                |'), nl,
+	write('|                                                                |'), nl,
+	write('|                                                                |'), nl,
+	write('|----------------------------------------------------------------|'), nl.
+	
 /*Membukan kunci gerbang*/
 
 /*PIN*/
