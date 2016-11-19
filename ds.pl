@@ -1,96 +1,176 @@
-:- dynamic(here/1).
-:- dynamic(have/1).
-:- dynamic(location/2).
+:- dynamic(lokasi_sekarang/1).
+:- dynamic(lock/2).
 
-
-
-/*Nama lokasi*/	
-	/*Lantai 1*/
-	room('halaman').
-	room('lapangan olahraga').
-	room('tempat parkir').
-		room('tempat sampah').
-	room('koridor lantai 1 timur').
-	room('koridor lantai 1 barat').
-	room('wc pria lantai 1').
-	room('wc wanita lantai 1').
-	room('kelas 1A').
-	room('kelas 1B').
-	room('tata usaha').
-		room(gudang).
-	room('ruang kepala sekolah').
-	room(lobby).
-	room('ruang guru').
-
-	/*Lantai 2*/
-	room('koridor lantai 2').
-	room(perpustakaan).
-	room('kelas 2A').
-	room('kelas 2B').
-	room('kelas 3').
-	room('wc pria lantai 2').
-	room('wc wanita lantai 2').
-	room('lab. IPA').
-	room('ruang multimedia').
-
-	/*Genteng*/
-	room('roof top').
-
-/*Koneksi ruangan*/
-/*Lantai 1*/
-	door(lobby, 'ruang guru').
-	door(lobby, 'ruang kepala sekolah').
-	door(lobby, 'halaman').
-	door(lobby, 'koridor lantai 1 timur').
-
-	door('koridor lantai 1 timur', 'kelas 1B').
-	door('koridor lantai 1 timur', 'tata usaha').
-		door('tata usaha', 'gudang').
-	door('koridor lantai 1 timur', 'koridor lantai 1 barat').
-	
-	door('koridor lantai 1 barat', 'kelas 1A').
-	door('koridor lantai 1 barat', 'wc pria lantai 1').
-	door('koridor lantai 1 barat', 'wc wanita lantai 1').
-	door('koridor lantai 1 barat', 'tempat parkir').
-		door('tempat parkir', 'lapangan olahraga').
-		door('tempat parkir', 'tempat sampah').
-			door('lapangan olahraga', 'halaman depan').
-
-/*Lantai 2*/
-	door('kelas 2A','koridor lantai 2').
-	door('kelas 3','koridor lantai 2').
-	door('kelas 2B','koridor lantai 2').
-	door(perpustakaan,'koridor lantai 2').
-	door('wc pria lantai 2','koridor lantai 2').
-	door('wc wanita lantai 2','koridor lantai 2').
-	door('ruang multimedia','koridor lantai 2').
-	door('lab. IPA','koridor lantai 2').
-
-
-/*Lantai 1 - Lantai 2*/
-	door('koridor lantai 2', lobby).
-
-/*Lantai 2 - Roof Top*/
-	door('koridor lantai 2','roof top').
-
-/* Membuat koneksi ruangan dua arah */
-	connection(X,Y) :- door(X,Y).
-	connection(X,Y) :- door(Y,X).		
-
-	lock('PIN', terkunci).
+%----------------------------------------------------------------------
+%-------------------------%BAGIAN 1: INISIALISASI----------------------
+%----------------------------------------------------------------------
+	lock('pin', terkunci).
 	lock('rantai', terkunci).
 	lock('gembok', terkunci).
 	lock('password', terkunci).
 
+%----------------------------------------------------------------------
+
+
+/*LIST LOKASI BENDA*/
+	/*Lantai 1*/
+	terletak(['papan tulis'], 'kelas 1A').
+	terletak(['papan tulis'], 'kelas 1B').
+	terletak(['papan tulis'], 'lobby').
+	terletak(['papan tulis'], 'ruang guru').
+	terletak(['papan tulis'], 'tata usaha').
+	terletak([], 'gudang').
+	terletak([], 'wc pria bawah').
+	terletak([], 'wc wanita bawah').
+	terletak([], 'tempat parkir').
+	terletak([], 'halaman').
+
+	/*Lantai 2*/
+	terletak(['papan tulis'], 'kelas 2B').
+	terletak(['papan tulis'], 'kelas 2A').
+	terletak(['papan tulis'], 'kelas 3').
+	terletak(['papan tulis'], 'perpustakaan').
+	terletak([], 'laboratorium').
+	terletak([], 'multimedia').
+	terletak([], 'wc pria atas').
+	terletak([], 'wc wanita bawah').
+	terletak([], 'koridor atas').
+
+	/*Lantai 3*/
+	terletak([], 'roof top').
+
+%----------------------------------------------------------------------
+%LANTAI1
+	jalan(lobby, u, ['koridor atas']).
+	jalan(lobby, n, ['ruang kepala sekolah']).
+	jalan(lobby, w, ['koridor bawah']).
+	jalan(lobby, e, ['ruang guru']).
+	jalan(lobby, s, ['halaman']).
+	jalan(lobby, d, []).
+
+	jalan('koridor bawah', u, []).
+	jalan('koridor bawah', n, ['wc pria bawah', 'wc wanita bawah', 'tata usaha']).
+	jalan('koridor bawah', s, ['kelas 1A', 'kelas 1B']).
+	jalan('koridor bawah', w, ['parkiran']).
+	jalan('koridor bawah', e, ['lobby']).
+	jalan('koridor bawah', d, []).
+
+	jalan('parkiran', u, []).
+	jalan('parkiran', n, []).
+	jalan('parkiran', w, []).
+	jalan('parkiran', e, ['koridor bawah']).
+	jalan('parkiran', s, []).
+	jalan('parkiran', d, []).
+
+	jalan('kelas 1B', u, []).
+	jalan('kelas 1B', n, ['koridor bawah']).
+	jalan('kelas 1B', w, []).
+	jalan('kelas 1B', e, []).
+	jalan('kelas 1B', s, []).
+	jalan('kelas 1B', d, []).
+
+	jalan('halaman', u, []).
+	jalan('halaman', n, ['lobby']).
+	jalan('halaman', w, []).
+	jalan('halaman', e, []).
+	jalan('halaman', s, ['exit']).
+	jalan('halaman', d, []).
+
+%----------------------------------------------------------------------
+%-------------------------%BAGIAN 2: BADAN GAME------------------------
+%----------------------------------------------------------------------
+
+lokasi_sekarang('halaman').
+isi_tas([]).
+
+start:-
+	persiapan_game,
+	write('Narasi.....'), nl, nl,
+	instructions, nl,
+	repeat,
+		write('Command: '), read(X),
+		do(X), nl,
+	X == quit.
+
+	/* Sinonim */
+	
+	do(n) :- n, !.
+	do(s) :- s, !.
+	do(w) :- w, !.
+	do(e) :- e, !.
+	do(u) :- u, !.
+	do(d) :- d, !.
+	do(utara) :- n, !.
+	do(selatan) :- s, !.
+	do(barat) :- w, !.
+	do(timur) :- e, !.
+	do(atas) :- u, !.
+	do(bawah) :- d, !.
+
+	do(help) :- instructions, !.
+	do(instruksi) :- instructions, !.
+	do(map(X)) :- map(X), !.
+	do(peta(X)) :- map(X), !.
+	
+	do(unlock(X)) :- unlock(X),!.
+	do(look) :- lihat_sekitar, !.
+	do(lihat_sekitar) :- lihat_sekitar, !.
+	do(quit).
+	do(_) :-
+		write('Perintah tidak valid!'), nl.	
+
+persiapan_game:-
+	retract(lokasi_sekarang(X)),
+	asserta(lokasi_sekarang('lobby')).
+
+%----------------------------------------------------------------------
+%-------------------------%BAGIAN 3: RULES DAN FUNGSI------------------
+%----------------------------------------------------------------------
+
+instructions:-
+	write('Berikut instruksi yang dapat dilakukan:'),nl,
+	write('start.							-- untuk memulai permainan.'), nl,
+	write('n. s. e. w. u. d.					-- untuk berpindah dari satu tempat ke tempat lainnya.'), nl,
+	write('take(Object)	!					-- untuk mengambil Objek.'), nl,
+	write('drop(Object)	!					-- untuk mengeluarkan dan menaruh Objek dari ransel.'), nl,
+	write('use(Object)	!					-- untuk menggunakan Objek.'), nl,
+	write('talk(Object)	!					-- untuk berbicara dengan Objek.'), nl,
+	write('periksa(Objek).					-- melihat suatu benda dengan lebih detail.'),nl,
+	write('gabungkan(Objek1, Objek2).		-- menggabungkan dua benda yang ada di di tas (jika bisa).'),nl,
+	write('bongkar(objek).					-- membongkar suatu objek menjadi bagian lebih kecil (jika bisa).'),nl,
+	write('hint.							-- memberi makanan kucing ke kucing misterius untuk mendapatkan hint.'),nl,
+	write('peta(nomor lantai).				-- menampilkan peta sekolah pada lantai tertentu.'),nl,
+	write('stat(Object)	!					-- untuk menampilkan atribut Objek.'), nl,
+	write('stat.							-- untuk menampilkan atribut player.'), nl,
+	write('menyerah.							-- untuk mengakhiri permainan dan menampilkan status akhir player.'), nl,
+	write('look.							-- untuk melihat apa saja yang ada di ruangan saat ini dan mencari tahu lokasi mana yang dapat dituju.'), nl,
+	write('instructions.						-- untuk menampilkan instruksi-instruksi yang dapat dilakukan.'), nl,
+	write('save(Filename).						-- untuk menyimpan status permainan.'), nl,
+	write('load(Filename).						-- untuk memuat status permainan yang pernah disimpan.'), nl,
+	write('quit.							-- untuk keluar dari permainan.'), nl,
+	nl,
+	lihat_sekitar.
+
+%-------------------------------------------------------------------------------------------------
+	
+	puzzle('exit'):-
+		lock('pin', terbuka),
+		lock('rantai', terbuka),
+		lock('gembok', terbuka),
+		lock('password', terbuka).
+	puzzle(_).
+
+%-------------------------------------------------------------------------------------------------
+
 /* MAP */
-map1 :-
+peta(1) :-
 	write('                                                        1ST FLOOR.'), nl,
 	write('|----------------------------------------------------------------|'), nl,
-	write('|       |  WC  |  WC  | Gudang [] TU  |  Ruang  | Tangga |       |'), nl,
-	write('|       | PRIA |WANITA|        |      |  Kepsek |        |       |'), nl,
-	write('|       |--[]-----[]------[]------[]-------[]-------[]---|       |'), nl,
+	write('|       |  WC  |  WC  | GUDANG | Tata |  Ruang  | Tangga |       |'), nl,
+	write('|       | PRIA |WANITA|       [] Usaha|  Kepsek |        |       |'), nl,
+	write('|       |--[]-----[]--------------[]-------[]-------[]---|       |'), nl,
 	write('|       |                             |                  |       |'), nl,
-	write('|   P   []            HALL            []                 | Ruang |'), nl,
+	write('|   P   []        KORIDOR BAWAH       []                 | Ruang |'), nl,
 	write('|   A   |                             |       LOBBY      | Guru  |'), nl,
 	write('|   R   |------[]--------------[]-----|                  |       |'), nl,
 	write('|   K   |               |             |                 []       |'), nl,
@@ -104,7 +184,7 @@ map1 :-
 	write('|       |                                                        |'), nl,
 	write('|------------------------------------------------------------[]--|'), nl.
 
-map2 :-
+peta(2) :-
 	write('                                                        2ND FLOOR.'), nl,
 	write('|----------------------------------------------------------------|'), nl,
 	write('|  WC  |  WC  |      Ruang     |  Laboratorium  | Tangga |       |'), nl,
@@ -118,7 +198,7 @@ map2 :-
 	write('|      KELAS 3       |    KELAS 2A     |    KELAS 2B     |       |'), nl,
 	write('|----------------------------------------------------------------|'), nl.
 
-map3 :-
+peta(3) :-
 	write('                                                         ROOF TOP.'), nl,
 	write('|----------------------------------------------------------------|'), nl,
 	write('|                                                                |'), nl,
@@ -131,187 +211,138 @@ map3 :-
 	write('|                                                                |'), nl,
 	write('|                                                                |'), nl,
 	write('|----------------------------------------------------------------|'), nl.
-	
-/*Membukan kunci gerbang*/
+peta(_) :-
+	write('Tidak ada peta untuk tempat itu...'), nl.
 
-/*PIN*/
+%-------------------------------------------------------------------------------------------------
+%LIHAT_SEKITAR
 
-unlock(X) :-
-	here(Y),
-	Y = 'halaman',
-	X = 'password',
-	lock(X,terkunci),
-	repeat,
-		write('Masukkan password (diakhiri "."): '), read(A),
-		test_password(A).
-
-unlock(X) :-
-	here(Y),
-	Y = 'halaman',
-	X = 'PIN',
-	lock(X,terkunci),
-	repeat,
-		write('Masukkan PIN 3 angka (tanpa spasi diakhiri "."): '), read_line_to_codes(A,Z),
-		test_pin(Z).
-
-
-	test_password('umumum'):-
-		write('Wah terbuka!'), nl,
-		/*Mengubah nilai terkunci*/
-		!.
-	test_password(_) :-
-		write('sayang sekali, passwordnya salah :( '), nl,
-		write('Coba lagi? (y./n.)'), read(Input),
-		coba_lagi(Input).	
+lihat_sekitar:-
+	lokasi_sekarang(X),
+	write('Saat ini ada di: '), nl,
+	tab(2),write(X),nl,
+	write('Di sini ada: '),nl,
+	daftar_objek(X),
+	write('Dari sini bisa ke: '),nl.
 	
 
-	test_pin(527):-
-		write('Wah terbuka!'), nl,
-		/*Mengubah nilai terkunci*/
-		!.
-	test_pin(_) :-
-		write('sepertinya kombinasi salah...'), nl,
-		write('Coba lagi?(y./n.): '), read(Input),
-		coba_lagi(Input).
+daftar_objek(X):-
+	terletak(List, X),
+	tulis_list(List).
 
-coba_lagi(y):-
-	fail, !.
-coba_lagi(n).
-
-/*Lokasi benda*/
-list_lokasi(['papan tulis'], 'kelas 1A').
-list_lokasi(['papan tulis'], 'kelas 1B').
-list_lokasi(['papan tulis'], 'kelas 2A').
-list_lokasi(['papan tulis'], 'kelas 2B').
-list_lokasi(['papan tulis'], 'kelas 3').
-list_lokasi(['papan tulis'], 'lobby').
-list_lokasi(['papan tulis'], 'tata usaha').
-list_lokasi(['papan tulis'], 'ruang guru').
-list_lokasi(['papan tulis'], 'perpustakaan').
-list_lokasi(['papan tulis'], 'tempat parkir').
-
-list_lokasi(['PIN'], 'halaman').
-list_lokasi(['panel kode'], 'halaman').
-
-list_lokasi(['DVD 1'], 'kelas 1A').
-list_lokasi(['DVD 2'], 'tempat sampah').
-list_lokasi(['DVD 3'], 'laci').
-
-list_lokasi(['meja'], 'gudang').
-
-list_lokasi([laptop], 'ruang multimedia').
-
-examine('papan tulis'):-
-	here(X),
-	X = 'kelas 2B',
-	nl,	write('Di papan tulis ada tulisan "LOBBY".'), nl,
-	!.
-
-examine('papan tulis'):-
-	here(X),
-	X = 'lobby',
-	nl, write('Di papan tulis ada tulisan "TU".'), nl,
-	!.
-
-examine('papan tulis'):-
-	here(X),
-	X = 'tata usaha',
-	write('Di papan tulis ada tulisan "HALAMAN".'), nl,
-	!.
+daftar_tujuan(X,Arah):-
+	jalan(X, Arah,List),
+	tulis_list(List).
+	
+tulis_list([]).
+tulis_list([H|T]):-
+	tab(2), write(H), nl,
+	tulis_list(T).
 
 
 
-/*Objek game
-	objek(nama, berat, tag).
-*/
-	objek('papan tulis', 2, kombinasi).
-	objek('kunci 2', 2, kombinasi).
-	objek('laptop', 1, password).
+%---------------------------------------------------------------------
+%NAVIGASI
+
+n:- pindah_ke(n).
+  %s ada di paling bawah.
+w:- pindah_ke(w).
+e:- pindah_ke(e).
+u:- pindah_ke(u).
+d:- pindah_ke(d).
+
+pindah_ke(Arah):-
+	lokasi_sekarang(X),
+	jalan(X, Arah, List),
+	write('Kamu bisa ke:'),nl,
+	tulis_list(List),
+	write('Pilih mau ke mana: '), read(Input),
+	input_tujuan(Input, Arah).
+
+input_tujuan(Input, Arah):-
+	lokasi_sekarang(X),
+	jalan(X, Arah, List),
+	isMember(Input,List),
+	(puzzle(X) ->
+	retract(lokasi_sekarang(X)),
+	asserta(lokasi_sekarang(Input)),
+	lihat_sekitar).
+input_tujuan(batal,_):-
+	write('Tidak jadi pergi...'),nl.
+input_tujuan(Input, Arah):-
+	write('Tidak bisa ke sana...'),nl,
+	write('Coba lagi (input batal jika tidak jadi):  '), read(X),
+	input_tujuan(X, Arah).
+
+isMember(X,[X|T]).
+isMember(X,[H|T]):-
+	isMember(X,T).
 
 
-/*Fungsi-fungsi penting*/
-start:-
-	write('Narasi.....'), nl, nl,
-	instructions, nl,
-	repeat,
-		write('Command: '), read(X),
-		do(X), nl,
-	X = end.
-
-instructions:-
-	write('Berikut instruksi yang dapat dilakukan:'),nl,
-	write('start.							-- untuk memulai permainan.'), nl,
-	write('n. s. e. w. u. d.					-- untuk berpindah dari satu tempat ke tempat lainnya.'), nl,
-	write('take(Object)						-- untuk mengambil Objek.'), nl,
-	write('drop(Object)						-- untuk mengeluarkan dan menaruh Objek dari ransel.'), nl,
-	write('use(Object)						-- untuk menggunakan Objek.'), nl,
-	write('talk(Object)						-- untuk berbicara dengan Objek.'), nl,
-	write('stat(Object)						-- untuk menampilkan atribut Objek.'), nl,
-	write('stat.							-- untuk menampilkan atribut player.'), nl,
-	write('giveup.							-- untuk mengakhiri permainan dan menampilkan status akhir player.'), nl,
-	write('look.							-- untuk melihat apa saja yang ada di ruangan saat ini dan mencari tahu lokasi mana yang dapat dituju.'), nl,
-	write('instructions.						-- untuk menampilkan instruksi-instruksi yang dapat dilakukan.'), nl,
-	write('save(Filename).						-- untuk menyimpan status permainan.'), nl,
-	write('load(Filename).						-- untuk memuat status permainan yang pernah disimpan.'), nl,
-	write('quit.							-- untuk keluar dari permainan.'), nl,
-	here(X),
-	write('Saat ini anda berada di '), write(X),nl.
+%-------------------------------------------------------------------------------------------------
 
 
-/*Membuat list barang yang ada di suatu tempat DAN menghasilkan TRUE*/
-	list_things(Place):-
-		location(X, Place),
-		tab(2),
-		write(X),
-		nl,
-		fail.
-	list_things(_).
+/*MEMBUKA KUNCI GERBANG*/
+unlock(X):-
+	lock(X, Y),
+	X == pin,
+	lokasi_sekarang(Place),
+	Place = 'halaman',
+	Y == terkunci,
+	write('masukkan pin (masukkan leave untuk keluar): '), read(Answer),
+	input_pin(Answer).
+unlock(X):-
+	lock(X, Y),
+	X == pin,
+	lokasi_sekarang(Place),
+	Place = 'halaman',
+	Y == terbuka,
+	write('PIN sudah benar...'),nl.
 
-/* Lokasi saat ini */
-	here('halaman').
-	inventory([]).
+unlock(X):-
+	lock(X, Y),
+	X == password,
+	lokasi_sekarang(Place),
+	Place = 'halaman',
+	Y == terkunci,
+	write('masukkan password (masukkan leave untuk keluar): '), read(Answer),
+	input_pass(Answer).
+unlock(X):-
+	lock(X, Y),
+	X == password,
+	lokasi_sekarang(Place),
+	Place = 'halaman',
+	Y == terbuka,
+	write('Password sudah dijawab...'),nl.
 
-	goto(Place):-
-		can_go(Place),
-		move(Place),
-		look.
 
-	can_go(Place):-
-		here(X),
-		connection(X,Place).
+	input_pin(X):-
+		X == 527,
+		write('Kunci terbuka!'),nl,
+		retract(lock(pin, terkunci)),
+		asserta(lock(pin, terbuka)).
+	input_pin(X):-
+		X == leave,
+		write('Meninggalkan kunci...'),nl.
+	input_pin(_):-
+		write('Kombinasi salah...'),nl,
+		write('Coba lagi: '), read(Z),
+		input_pin(Z).
 
-	can_go(Place):-
-		write('You can''t get there frome here.'),nl,
-		fail.
-
-	move(Place):-
-		retract(here(X)),
-		asserta(here(Place)).
-
-	look :-
-		here(Place),
-		write('You are in the: '), write(Place), nl,
-		write('You can see: '), nl,
-		list_things(Place),
-		write('You can go to: '), nl,
-		list_connections(Place).
-
-	list_connections(Place) :-
-		connection(Place,X),
-		tab(2),
-		write(X),nl,
-		fail.
-	list_connections(_).	
-
-/* Sinonim */
-	do(go(X)) :- goto(X),!.
-	do(go(_)) :- !.
-	do(unlock(X)) :- unlock(X),!.
-	do(look) :- look, !.
-	do(quit).
-	do(use(X)) :- use(X),!.
-	do(_) :-
-		write('Perintah tidak valid!').	
+	input_pass(X):-
+		X == umumum,
+		write('Kunci terbuka!'),nl,
+		retract(lock(pass, terkunci)),
+		asserta(lock(pass, terbuka)).
+	input_pass(leave):-
+		X == leave,
+		write('Meninggalkan kunci...'),nl.
+	input_pass(_):-
+		write('Password salah...'),nl,
+		write('Coba lagi: '), read(Z),
+		input_pin(Z).
+%----------------------------------------------------------------------
+s:- pindah_ke(s).
 
 /*
 	Referensi:
