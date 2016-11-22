@@ -1,3 +1,4 @@
+
 :- dynamic(lokasi_sekarang/1).
 :- dynamic(lock/2).
 
@@ -20,10 +21,12 @@
 	terletak(['papan tulis'], 'ruang guru').
 	terletak(['papan tulis'], 'tata usaha').
 	terletak([], 'gudang').
+	terletak([], 'ruang kepala sekolah').
 	terletak([], 'wc pria bawah').
 	terletak([], 'wc wanita bawah').
 	terletak([], 'tempat parkir').
 	terletak([], 'halaman').
+	terletak([], 'koridor bawah').
 
 	/*Lantai 2*/
 	terletak(['papan tulis'], 'kelas 2B').
@@ -31,7 +34,7 @@
 	terletak(['papan tulis'], 'kelas 3').
 	terletak(['papan tulis'], 'perpustakaan').
 	terletak([], 'laboratorium').
-	terletak([], 'multimedia').
+	terletak([laptop], 'multimedia').
 	terletak([], 'wc pria atas').
 	terletak([], 'wc wanita bawah').
 	terletak([], 'koridor atas').
@@ -47,6 +50,13 @@
 	jalan(lobby, e, ['ruang guru']).
 	jalan(lobby, s, ['halaman']).
 	jalan(lobby, d, []).
+
+	jalan('ruang kepala sekolah', u, []).
+	jalan('ruang kepala sekolah', n, []).
+	jalan('ruang kepala sekolah', w, []).
+	jalan('ruang kepala sekolah', e, []).
+	jalan('ruang kepala sekolah', s, [lobby]).
+	jalan('ruang kepala sekolah', d, []).
 
 	jalan('koridor bawah', u, []).
 	jalan('koridor bawah', n, ['wc pria bawah', 'wc wanita bawah', 'tata usaha']).
@@ -68,6 +78,13 @@
 	jalan('kelas 1B', e, []).
 	jalan('kelas 1B', s, []).
 	jalan('kelas 1B', d, []).
+
+	jalan('kelas 1A', u, []).
+	jalan('kelas 1A', n, ['koridor bawah']).
+	jalan('kelas 1A', w, []).
+	jalan('kelas 1A', e, []).
+	jalan('kelas 1A', s, []).
+	jalan('kelas 1A', d, []).
 
 	jalan('halaman', u, []).
 	jalan('halaman', n, ['lobby']).
@@ -96,7 +113,7 @@ start:-
 	
 	do(n) :- n, !.
 	do(s) :- s, !.
-	do(w) :- w, !.
+	do(w) :- w, !, write('test'),nl.
 	do(e) :- e, !.
 	do(u) :- u, !.
 	do(d) :- d, !.
@@ -109,9 +126,10 @@ start:-
 
 	do(help) :- instructions, !.
 	do(instruksi) :- instructions, !.
-	do(map(X)) :- map(X), !.
-	do(peta(X)) :- map(X), !.
+	do(map(X)) :- peta(X), !.
+	do(peta(X)) :- peta(X), !.
 	
+	do(periksa(X)) :- periksa(X),!.
 	do(unlock(X)) :- unlock(X),!.
 	do(look) :- lihat_sekitar, !.
 	do(lihat_sekitar) :- lihat_sekitar, !.
@@ -154,12 +172,46 @@ instructions:-
 %-------------------------------------------------------------------------------------------------
 	
 	puzzle('exit'):-
-		lock('pin', terbuka),
-		lock('rantai', terbuka),
-		lock('gembok', terbuka),
-		lock('password', terbuka).
+		lock('pin', terkunci),
+		lock('rantai', terkunci),
+		lock('gembok', terkunci),
+		lock('password', terkunci),
+		!,fail.
 	puzzle(_).
 
+%-------------------------------------------------------------------------------------------------
+	periksa('papan tulis'):-
+	lokasi_sekarang('kelas 1B'),
+	nl,
+	write('Di papan tertulis: '),nl,
+	write('Kamu terjebak di dimensi ini karena tidur di kelas!'),nl,
+	write('Cobalah cari jalan keluar... jika kamu memang tidak malas.'),nl,!.
+
+	periksa('papan tulis'):-
+		lokasi_sekarang('kelas 2B'),
+		nl,
+		write('Di papan tertulis: '),nl,
+		write('LOBBY'),nl,!.
+
+	periksa('papan tulis'):-
+		lokasi_sekarang('Lobby'),
+		nl,
+		write('Di papan tertulis: '),nl,
+		write('TU'),nl,!.
+
+	periksa('papan tulis'):-
+		lokasi_sekarang('tata usaha'),
+		nl,
+		write('Di papan tertulis: '),nl,
+		write('HALAMAN'),nl,!.
+
+	periksa('papan tulis'):-
+		lokasi_sekarang(_),
+		nl,
+		write('Di papan tidak tetulis apa-apa...'),nl,!.
+
+	periksa(_):-
+		write('Tidak ada barang seperti itu di sini...'), nl.
 %-------------------------------------------------------------------------------------------------
 
 /* MAP */
@@ -223,7 +275,13 @@ lihat_sekitar:-
 	tab(2),write(X),nl,
 	write('Di sini ada: '),nl,
 	daftar_objek(X),
-	write('Dari sini bisa ke: '),nl.
+	write('Dari sini bisa ke: '),nl,
+	write('Utara 	: '), daftar_tujuan(X,n),nl,
+	write('Selatan : '), daftar_tujuan(X,s),nl,
+	write('Barat 	: '), daftar_tujuan(X,w),nl,
+	write('Timur 	: '), daftar_tujuan(X,e),nl,
+	write('Atas 	: '), daftar_tujuan(X,u),nl,
+	write('Bawah 	: '), daftar_tujuan(X,d),nl.
 	
 
 daftar_objek(X):-
@@ -232,13 +290,17 @@ daftar_objek(X):-
 
 daftar_tujuan(X,Arah):-
 	jalan(X, Arah,List),
-	tulis_list(List).
+	tulis_list_h(List).
 	
 tulis_list([]).
 tulis_list([H|T]):-
 	tab(2), write(H), nl,
 	tulis_list(T).
 
+tulis_list_h([]).
+tulis_list_h([H|T]):-
+	tab(2), write(H), write(', '),
+	tulis_list_h(T).
 
 
 %---------------------------------------------------------------------
@@ -259,19 +321,21 @@ pindah_ke(Arah):-
 	write('Pilih mau ke mana: '), read(Input),
 	input_tujuan(Input, Arah).
 
+
 input_tujuan(Input, Arah):-
 	lokasi_sekarang(X),
 	jalan(X, Arah, List),
 	isMember(Input,List),
-	(puzzle(X) ->
+	puzzle(Input),
 	retract(lokasi_sekarang(X)),
 	asserta(lokasi_sekarang(Input)),
-	lihat_sekitar).
+	lihat_sekitar,!.
 input_tujuan(batal,_):-
 	write('Tidak jadi pergi...'),nl.
-input_tujuan(Input, Arah):-
+input_tujuan(A, B):-
+	jalan(A,B,[]),
 	write('Tidak bisa ke sana...'),nl,
-	write('Coba lagi (input batal jika tidak jadi):  '), read(X),
+	write('Coba lagi: '), read(X),
 	input_tujuan(X, Arah).
 
 isMember(X,[X|T]).
@@ -347,5 +411,5 @@ s:- pindah_ke(s).
 /*
 	Referensi:
 		http://www.amzi.com/AdventureInProlog/a1start.php
+*/
 
-*/	
