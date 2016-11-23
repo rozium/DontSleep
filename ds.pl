@@ -281,6 +281,15 @@ gabungan(kosong, laptop).
 
 new_game:-
 	persiapan_game,
+	write('            ▓█████▄  ▒█████   ███▄    █ ▄▄▄█████▓     ██████  ██▓    ▓█████ ▓█████  ██▓███  '),nl,
+	write('            ▒██▀ ██▌▒██▒  ██▒ ██ ▀█   █ ▓  ██▒ ▓▒   ▒██    ▒ ▓██▒    ▓█   ▀ ▓█   ▀ ▓██░  ██▒'),nl,
+	write('            ░██   █▌▒██░  ██▒▓██  ▀█ ██▒▒ ▓██░ ▒░   ░ ▓██▄   ▒██░    ▒███   ▒███   ▓██░ ██▓▒'),nl,
+	write('            ░▓█▄   ▌▒██   ██░▓██▒  ▐▌██▒░ ▓██▓ ░      ▒   ██▒▒██░    ▒▓█  ▄ ▒▓█  ▄ ▒██▄█▓▒ ▒'),nl,
+	write('            ░▒████▓ ░ ████▓▒░▒██░   ▓██░  ▒██▒ ░    ▒██████▒▒░██████▒░▒████▒░▒████▒▒██▒ ░  ░'),nl,
+	write('             ▒▒▓  ▒ ░ ▒░▒░▒░ ░ ▒░   ▒ ▒   ▒ ░░      ▒ ▒▓▒ ▒ ░░ ▒░▓  ░░░ ▒░ ░░░ ▒░ ░▒▓▒░ ░  ░'),nl,
+	write('             ░ ▒  ▒   ░ ▒ ▒░ ░ ░░   ░ ▒░    ░       ░ ░▒  ░ ░░ ░ ▒  ░ ░ ░  ░ ░ ░  ░░▒ ░     '),nl,
+	write('             ░ ░  ░ ░ ░ ░ ▒     ░   ░ ░   ░         ░  ░  ░    ░ ░      ░      ░   ░░       '),nl,
+	write('               ░        ░ ░           ░                   ░      ░  ░   ░  ░   ░  ░         '),nl,nl,
 	write('Narasi.....'), nl, nl,
 	instructions, nl,
 	start.
@@ -384,26 +393,25 @@ win:-
 
 instructions:-
 	write('Berikut instruksi yang dapat dilakukan:'),nl,
-	write('start.							-- untuk memulai permainan.'), nl,
-	write('n. s. e. w. u. d.					-- untuk berpindah dari satu tempat ke tempat lainnya.'), nl,
-	write('ambil(Object)					-- untuk mengambil Objek.'), nl,
-	write('drop(Object)						-- untuk mengeluarkan dan menaruh Objek dari ransel.'), nl,
-	write('use(Object)						-- untuk menggunakan Objek.'), nl,
-	write('bicara(Object)						-- untuk berbicara dengan Objek.'), nl,
-	write('periksa(Objek).					-- melihat suatu benda dengan lebih detail.'),nl,
-	write('gabungkan(Objek1, Objek2).		-- menggabungkan dua benda yang ada di di tas (jika bisa).'),nl,
-	write('bongkar(objek).			!		-- membongkar suatu objek menjadi bagian lebih kecil (jika bisa).'),nl,
-	write('hint.							-- memberi makanan kucing ke kucing misterius untuk mendapatkan hint.'),nl,
-	write('peta(nomor lantai).				-- menampilkan peta sekolah pada lantai tertentu.'),nl,
-	write('stat.							-- untuk menampilkan atribut player.'), nl,
-	write('menyerah.							-- untuk mengakhiri permainan dan menampilkan status akhir player.'), nl,
-	write('lihat_sekitar.							-- untuk melihat apa saja yang ada di ruangan saat ini dan mencari tahu lokasi mana yang dapat dituju.'), nl,
-	write('instructions.						-- untuk menampilkan instruksi-instruksi yang dapat dilakukan.'), nl,
-	write('save(Filename).!						-- untuk menyimpan status permainan.'), nl,
-	write('load(Filename).!						-- untuk memuat status permainan yang pernah disimpan.'), nl,
-	write('quit.							-- untuk keluar dari permainan.'), nl,
-	nl,
-	lihat_sekitar.
+	write('start.                            -- untuk memulai permainan.'), nl,
+	write('n. s. e. w. u. d.                 -- untuk berpindah dari satu tempat ke tempat lainnya.'), nl,
+	write('ambil(Objek).                     -- untuk mengambil Objek.'), nl,
+	write('drop(Objek).                      -- untuk mengeluarkan dan menaruh Objek dari ransel.'), nl,
+	write('use(Objek).                       -- untuk menggunakan Objek.'), nl,
+	write('bicara(Objek).                    -- untuk berbicara dengan Objek.'), nl,
+	write('periksa(Objek).                   -- melihat suatu benda dengan lebih detail.'),nl,
+	write('gabungkan(Objek1, Objek2).        -- menggabungkan dua benda yang ada di di tas (jika bisa).'),nl,
+	write('bongkar(objek).!                  -- membongkar suatu objek menjadi bagian lebih kecil (jika bisa).'),nl,
+	write('hint.                             -- memberi makanan kucing ke kucing misterius untuk mendapatkan hint.'),nl,
+	write('peta(nomor lantai).               -- menampilkan peta sekolah pada lantai tertentu.'),nl,
+	write('stat.                             -- untuk menampilkan atribut player.'), nl,
+	write('menyerah.                         -- untuk mengakhiri permainan dan menampilkan status akhir player.'), nl,
+	write('lihat_sekitar.                    -- untuk melihat apa saja yang ada di ruangan saat ini dan mencari tahu lokasi mana yang dapat dituju.'), nl,
+	write('instruksi.                        -- untuk menampilkan instruksi-instruksi yang dapat dilakukan.'), nl,
+	write('save(Filename).!                  -- untuk menyimpan status permainan.'), nl,
+	write('load(Filename).!                  -- untuk memuat status permainan yang pernah disimpan.'), nl,
+	write('quit.                             -- untuk keluar dari permainan.'), nl,
+	nl.
 
 %-------------------------------------------------------------------------------------------------
 %PERIKSA PERIKSA PERIKSA 
