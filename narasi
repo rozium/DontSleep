@@ -1,0 +1,35 @@
+narasi:-
+	write('Kamu adalah seorang siswa SMA kelas 10 di SMA Sayang Ibu dan Bapak dan Kakak maupun Adik'),nl,
+	write('Keseharianmu hanyalah makan, main, tidur, tidur dan tidur di kelas.'),nl,
+	write('Belajar hanyalah jika minggu ujian sudah dekat. Kursi favoritmu ialah pojok kiri belakang,'),nl,
+	write('tempat yang paling pas untuk tidur.'),nl,nl,
+	
+	write('Ketik "v." kemudian ENTER),nl,nl,
+	
+	write('Hari Sabtu, ada kelas tambahan jam 4 sore. Kamu sangat malas untuk ikut kelas tersebut,'),nl,
+	write('dan kemudian memutuskan untuk pulang kerumah saja. Namun ternyata, satpam yang galak terlihat'),nl,
+	write('sedang menjaga pagar sekolah. Kamu kemudian memikirkan segala cara untuk bisa keluar dari sekolah ini,'),nl,
+	write('karena kamu tidak terbiasa untuk memikir, maka kamu hanya terpikirkan satu cara, yaitu ikut kelas.'),nl,nl,
+
+	write('Ketik "v." kemudian ENTER),nl,nl,
+
+	write('Setelah kelas dimulai, hal yang paling pertama disampikan oleh Bu Guru yaitu jangan tidur dikelas'),nl,
+	write('karena materi yang akan disampaikan sangatlah berguna untuk UTS nanti. Namun ternyata, cara mengajar'),nl,
+	write('guru tersebut tidak cocok dengan cara kamu belajar, ditambah jam sore seperti ini adalah waktu yang pas'),nl,
+	write('untuk tidur. Maka kamupun kemudian memutuskan untuk melakukan kegiatan yg sering km lakukan, yaitu tidur.'),nl,nl
+
+	write('Ketik "v." kemudian ENTER),nl,nl,
+
+	write('Zzz.. Zz.. z...,'),nl,nl,
+
+	write('Ketik "v." kemudian ENTER),nl,nl,
+
+	write('Kamu terbangun dikarenakan suara kucing kelaparan yang sangat berisik. Di sekelilingmu tidak ada siapa siapa'),nl,
+	write('kecuali kucing hitam tersebut. Kamu kemudian melihat kearah jam dinding dan ternyata jam tersebut tidak ada'),nl,
+	write('jarum penunjuknya, yang ada hanyalah angka 1 sampai 12. Di papantulis tertulis sebuah pesan untukmu'),nl,
+	write('"Kamu terjebak di dimensi ini karena tidur di kelas! Cobalah cari jalan keluar... jika kamu memang tidak malas."'),nl,nl,
+
+	write('Ketik "v." kemudian ENTER),nl,nl,
+
+	write('Sekarang kamu punya dua pilihan. Keluar dari dimensi ini, atau lanjut tidur dan menjadi pemalas untuk seumur hidup.'),nl,
+	write('Selamat Bermain!!').
