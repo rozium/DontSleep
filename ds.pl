@@ -17,6 +17,9 @@
 :- dynamic(langkah/1).
 :- dynamic(score/1).
 :- dynamic(gabungan/2).
+:- dynamic(keran/1).
+:- dynamic(campuran_kimia/1).
+:- dynamic(npc/2).
 
 %----------------------------------------------------------------------
 %-------------------------%BAGIAN 1: INISIALISASI----------------------
@@ -31,17 +34,33 @@
 bisa_diambil('papan_tulis', tidak).
 bisa_diambil('tempat_sampah', tidak).
 bisa_diambil('meja', tidak).
+bisa_diambil('meja_lab', tidak).
 bisa_diambil('lemari', tidak).
+bisa_diambil('loker_1', tidak).
+bisa_diambil('loker_2', tidak).
+bisa_diambil('loker_3', tidak).
+bisa_diambil('loker_4', tidak).
+bisa_diambil('loker_5', tidak).
+bisa_diambil('wastafel', tidak).
+bisa_diambil('peralatan_kimia', tidak).
 
+bisa_diambil('buku_resep', bisa).
 bisa_diambil('dvd_1', bisa).
 bisa_diambil('dvd_2', bisa).
 bisa_diambil('dvd_3', bisa).
 bisa_diambil('laptop', bisa).
 bisa_diambil('kunci_gembok', bisa).
+bisa_diambil('tengkorak_kucing', bisa).
+bisa_diambil('botol_semprot', bisa).
+bisa_diambil('jarum_suntik', bisa).
+bisa_diambil('mawar', bisa).
+bisa_diambil('puisi', bisa).
 
 %----------------------------------------------------------------------
 %NPC NPC NPC
 npc(kucing, 'kelas_1B').
+npc(arwah, gentayangan).
+
 bicara(kucing):-
 	lokasi_sekarang('kelas_1B'),
 	score(Score),
@@ -74,6 +93,47 @@ bicara(kucing):-
 	Score = 4,
 	write('Jadi kau sudah membuka semua kunci... tunggu apa lagi? cepat pergi...'),nl,nl.
 
+bicara(arwah):-
+	lokasi_sekarang('kelas_3'),
+	npc(arwah,bebas),
+	write('Kamu membayangkan apakah arwah perempuan itu berhasil menemui gurunya...'),nl,nl.
+
+
+bicara(arwah):-
+	lokasi_sekarang('kelas_3'),
+	isi_tas(List),
+	isMember(mawar, List),
+	isMember(puisi, List),
+	write('Arwah perempuan: "Apa kau bilang? kau menemukan hadiah dari guruku tercinta?"'),nl,
+	write('Kamu membacakan isi puisi sebaik yang kau bisa sembari memberikan bunga mawar ke arwah perempuan itu.'),nl,
+	write('Arwah perempuan: "Itu romantis sekali... Oh guruku tercinta, aku akan segera menyusulmu!'),nl,
+	write('Sosok arwah perempuan itupun perlahan menghilang. Akhirnya dia bisa beristirahat dengan tenang.'),nl,
+	write('Pada meja tempat arwah itu duduk ada 2 makanan kucing dengan pesan: "Terima kasih".'),nl,
+	write('Perasaan senang membanjiri tubuhmu dan membuatmu lebih percaya kamu bisa keluar dari sini.'),nl,nl,
+	write('SIDE QUEST BERHASIL'),nl,nl,
+	retract(pemain(A,_)),
+	A1 is A+2,
+	asserta(pemain(A1,0)),
+	retract(npc(arwah,_)),
+	asserta(npc(arwah, bebas)).
+
+bicara(arwah):-
+	lokasi_sekarang('kelas_3'),
+	isi_tas(List),
+	isMember(puisi, List),
+	write('Arwah perempuah: "Hmm? Puisi cinta? Maaf ya aku tidak tertarik dengan adik kelas."'),nl,nl.
+
+bicara(arwah):-
+	lokasi_sekarang('kelas_3'),
+	isi_tas(List),
+	isMember(mawar, List),
+	write('Arwah perempuah: "Bunga itu! Tidak... aku pasti salah lihat."'),nl,nl.
+
+bicara(arwah):-
+	lokasi_sekarang('kelas_3'),
+	write('Arwah perempuan: "Apa yang kau inginkan? Tinggalkan aku dan hatiku yang hancur ini sendiri.'),nl,
+	write('                  Yang kuinginkan hanyalah untuk bersama dengan guruku tercinta..."'),nl,nl.
+
 %----------------------------------------------------------------------
 
 
@@ -82,7 +142,7 @@ bicara(kucing):-
 	terletak(['papan_tulis', 'dvd_1'], 'kelas_1A').
 	terletak(['papan_tulis'], 'kelas_1B').
 	terletak(['papan_tulis'], 'lobby').
-	terletak(['papan_tulis'], 'ruang_guru').
+	terletak(['papan_tulis', puisi, mawar], 'ruang_guru').
 	terletak(['papan_tulis'], 'tata_usaha').
 	terletak([meja], 'gudang').
 		terletak([laci], meja).
@@ -99,9 +159,13 @@ bicara(kucing):-
 	/*Lantai 2*/
 	terletak(['papan_tulis'], 'kelas_2B').
 	terletak(['papan_tulis'], 'kelas_2A').
-	terletak(['papan_tulis'], 'kelas_3').
+	terletak(['papan_tulis', arwah], 'kelas_3').
 	terletak(['papan_tulis'], 'perpustakaan').
-	terletak([], 'laboratorium').
+	terletak([loker_1, loker_2, loker_3, loker_4, loker_5, wastafel, meja_lab], 'laboratorium').
+		terletak([jarum_suntik, botol_semprot], loker_2).
+		terletak([buku_resep], loker_4).
+		terletak([tengkorak_kucing], loker_5).
+		terletak([peralatan_kimia], meja_lab).
 	terletak([laptop], 'multimedia').
 	terletak([], 'wc_pria_atas').
 	terletak([], 'wc_wanita_bawah').
@@ -290,10 +354,18 @@ bicara(kucing):-
 lokasi_sekarang('ruang_guru').
 isi_tas([tes1, tes2]).
 pemain(5,80).
-langkah(100).
-score(100).
+langkah(0).
+score(0).
+list_kimia([sodium_hydroxide, cyanuric_acid, ferrous_sulfate, distilled_water, boiled_water]).
+keran(0).
+campuran_kimia([]).
+
 
 gabungan(kosong, laptop).
+
+lanjut:-
+	write('Ketik "v.", kemudian tekan enter ....'), nl,
+	write('> '), read(_),nl,nl.
 
 start:-
 	persiapan_game,
@@ -305,8 +377,11 @@ start:-
 	write('             ▒▒▓  ▒ ░ ▒░▒░▒░ ░ ▒░   ▒ ▒   ▒ ░░      ▒ ▒▓▒ ▒ ░░ ▒░▓  ░░░ ▒░ ░░░ ▒░ ░▒▓▒░ ░  ░'),nl,
 	write('             ░ ▒  ▒   ░ ▒ ▒░ ░ ░░   ░ ▒░    ░       ░ ░▒  ░ ░░ ░ ▒  ░ ░ ░  ░ ░ ░  ░░▒ ░     '),nl,
 	write('             ░ ░  ░ ░ ░ ░ ▒     ░   ░ ░   ░         ░  ░  ░    ░ ░      ░      ░   ░░       '),nl,
-	write('               ░        ░ ░           ░                   ░      ░  ░   ░  ░   ░  ░         '),nl,nl,	
+	write('               ░        ░ ░           ░                   ░      ░  ░   ░  ░   ░  ░         '),nl,nl,
 	write('Narasi.....'), nl, nl,
+	lanjut,
+	write('Narasi.....'), nl, nl,
+	lanjut,
 	instructions, nl,
 	lihat_sekitar,
 	repeat,
@@ -315,10 +390,10 @@ start:-
 	(X == quit ; X == menyerah ; bete; win).
 
 	/* Sinonim */
-	
+
 	do(n) :- n, !.
 	do(s) :- s, !.
-	do(w) :- w, !, write('test'),nl.
+	do(w) :- w, !.
 	do(e) :- e, !.
 	do(u) :- u, !.
 	do(d) :- d, !.
@@ -361,38 +436,49 @@ start:-
 	do(lihat_sekitar) :- lihat_sekitar, !.
 	do(quit).
 	do(_) :-
-		write('Perintah tidak valid!'), nl.	
+		write('Perintah tidak valid!'), nl.
 
 persiapan_game:-
-	retract(lokasi_sekarang(X)),
-	asserta(lokasi_sekarang('kelas_1B')),
+	retract(lokasi_sekarang(_)),
+	asserta(lokasi_sekarang('laboratorium')),
 
-	retract(isi_tas(List_tas)),
+	retract(isi_tas(_)),
 	asserta(isi_tas([])),
 
-	retract(pemain(H,S)),
+	retract(pemain(_,_)),
 	asserta(pemain(2,0)),
 
-	retract(langkah(Langkah)),
+	retract(npc(arwah,_)),
+	asserta(npc(arwah, gentayangan)),
+
+	retract(langkah(_)),
 	asserta(langkah(0)),
 
-	retract(score(Score)),
+	retract(score(_)),
 	asserta(score(0)),
 
-	retract(lock(gembok, A1)),
+	retract(lock(gembok, _)),
 	asserta(lock(gembok, terkunci)),
 
-	retract(lock(pin, A2)),
+	retract(lock(pin, _)),
 	asserta(lock(pin, terkunci)),
 
-	retract(lock(password, A3)),
+	retract(lock(password, _)),
 	asserta(lock(password, terkunci)),
 
-	retract(lock(rantai, A4)),
+	retract(lock(rantai, _)),
 	asserta(lock(rantai, terkunci)),
 
-	retract(gabungan(D, laptop)),
+	retract(keran(_)),
+	asserta(keran(1)),
+
+	retractall(campuran_kimia(_)),
+	asserta(campuran_kimia([])),
+
+	retract(gabungan(_, laptop)),
 	asserta(gabungan(kosong, laptop)).
+
+
 
 bete:-
 	pemain(_,Stress),
@@ -402,8 +488,32 @@ bete:-
 	write('GAME OVER...'),nl,nl.
 win:-
 	lokasi_sekarang(exit),
-	write('Akhirnya kamu berhasil keluar dari dimensi ini!! Semoga kamu berpikir'),nl,
-	write('dua kali sebelum tidur di kelas setelah ini!'),nl,nl.
+	write('            ▓█████▄  ▒█████   ███▄    █ ▄▄▄█████▓     ██████  ██▓    ▓█████ ▓█████  ██▓███  '),nl,
+	write('            ▒██▀ ██▌▒██▒  ██▒ ██ ▀█   █ ▓  ██▒ ▓▒   ▒██    ▒ ▓██▒    ▓█   ▀ ▓█   ▀ ▓██░  ██▒'),nl,
+	write('            ░██   █▌▒██░  ██▒▓██  ▀█ ██▒▒ ▓██░ ▒░   ░ ▓██▄   ▒██░    ▒███   ▒███   ▓██░ ██▓▒'),nl,
+	write('            ░▓█▄   ▌▒██   ██░▓██▒  ▐▌██▒░ ▓██▓ ░      ▒   ██▒▒██░    ▒▓█  ▄ ▒▓█  ▄ ▒██▄█▓▒ ▒'),nl,
+	write('            ░▒████▓ ░ ████▓▒░▒██░   ▓██░  ▒██▒ ░    ▒██████▒▒░██████▒░▒████▒░▒████▒▒██▒ ░  ░'),nl,
+	write('             ▒▒▓  ▒ ░ ▒░▒░▒░ ░ ▒░   ▒ ▒   ▒ ░░      ▒ ▒▓▒ ▒ ░░ ▒░▓  ░░░ ▒░ ░░░ ▒░ ░▒▓▒░ ░  ░'),nl,
+	write('             ░ ▒  ▒   ░ ▒ ▒░ ░ ░░   ░ ▒░    ░       ░ ░▒  ░ ░░ ░ ▒  ░ ░ ░  ░ ░ ░  ░░▒ ░     '),nl,
+	write('             ░ ░  ░ ░ ░ ░ ▒     ░   ░ ░   ░         ░  ░  ░    ░ ░      ░      ░   ░░       '),nl,
+	write('               ░        ░ ░           ░                   ░      ░  ░   ░  ░   ░  ░         '),nl,nl,
+	write('                  Akhirnya kamu berhasil keluar dari dimensi ini!! Semoga kamu berpikir'),nl,
+	write('                              dua kali sebelum tidur di kelas setelah ini!'),nl,
+
+	write('                                              Dibuat oleh:'),nl,nl,
+	write('                               %-----------------------------------------%'),nl,
+	write('                               %     TUGAS BESAR LOGIKA INFOMARTIKA      %'),nl,
+	write('                               %               Kelompok 9                %'),nl,
+	write('                               %                Kelas 02                 %'),nl,
+	write('                               %-----------------------------------------%'),nl,
+	write('                               % 13515026 - Achmad Fahrurrozi Maskur     %'),nl,
+	write('                               % 13515050 - Muhammad Umar Fariz Tumbuan  %'),nl,
+	write('                               % 13515092 - Diki Ardian Wirasandi        %'),nl,
+	write('                               % 13515125 - Muhammad Rafid Amrullah      %'),nl,
+	write('                               %-----------------------------------------%'),nl.
+
+
+
 %----------------------------------------------------------------------
 %-------------------------%BAGIAN 3: RULES DAN FUNGSI------------------
 %----------------------------------------------------------------------
@@ -414,14 +524,12 @@ instructions:-
 	write('ambil(Objek).                     -- untuk mengambil Objek.'), nl,
 	write('jatuhkan(Objek).                  -- untuk mengeluarkan dan menaruh Objek dari ransel.'), nl,
 	write('gunakan(Objek).                   -- untuk menggunakan Objek.'), nl,
-	write('bicara(Objek).                    -- untuk berbicara dengan Objek.'), nl,nl,
-	
+	write('bicara(Objek).                    -- untuk berbicara dengan Objek.'), nl,
 	write('periksa(Objek).                   -- melihat suatu benda dengan lebih detail.'),nl,
 	write('gabungkan(Objek1, Objek2).        -- menggabungkan dua benda yang ada di di tas (jika bisa).'),nl,
 	write('bongkar(objek).                   -- membongkar suatu objek menjadi bagian lebih kecil (jika bisa).'),nl,
-	write('peta(nomor lantai).               -- menampilkan peta sekolah pada lantai tertentu.'),nl,nl,
-	write('unlock(Objek)                     -- coba membuka kunci yang ada di halaman.'),nl,nl,
-	
+	write('peta(nomor lantai).               -- menampilkan peta sekolah pada lantai tertentu.'),nl,
+	write('unlock(Objek)                     -- coba membuka kunci yang ada di halaman.'),nl,
 	write('hint.                             -- memberi makanan kucing ke kucing misterius untuk mendapatkan hint.'),nl,
 	write('stat.                             -- untuk menampilkan atribut player.'), nl,
 	write('menyerah.                         -- untuk mengakhiri permainan dan menampilkan status akhir player.'), nl,
@@ -434,35 +542,24 @@ instructions:-
 	nl.
 
 %-------------------------------------------------------------------------------------------------
+
+
+
 %SAVE LOAD SAVE LOAD
 %save(X):-
-%	lokasi_sekarang(Lokasi),
-%	pemain(Makanan, Stress),
-%	isi_tas(List_tas),
-%
-%	setup_call_cleanup(
-%		open(X,write,Out),
-%	    (
-%	      write_term(Out,pemain(Makanan, Stress), [fullstop(true)]),nl(Out),
-%	      write_term(Out,lokasi_sekarang(Lokasi), [fullstop(true)]),nl(Out),
-%	      write_term(Out,isi_tas(List_tas), [fullstop(true)])
-%	    ),
-%	    close(Out)
-%	    ),
-%	write('Save berhasil!'),nl,nl.
-%:- set_prolog_flag(double_quotes,chars).
-%:- use_module(library(double_quotes)).
+
+%:- dynamic(terletak/2).
 
 save(X):-
 	open(X,write,Tulis),
 	lokasi_sekarang(Loc),
 	atom_concat(Loc,'.',Temp1),
 	write(Tulis,Temp1),nl(Tulis),
-	
+
 	lock(gembok,Cond1),
 	atom_concat(Cond1,'.',Temp2),
 	write(Tulis,Temp2),nl(Tulis),
-	
+
 	lock(pin,Cond2),
 	atom_concat(Cond2,'.',Temp3),
 	write(Tulis,Temp3),nl(Tulis),
@@ -476,18 +573,18 @@ save(X):-
 	write(Tulis,Temp5),nl(Tulis),
 
 	isi_tas(List_tas),
-	
+
 	(isMember('dvd_1', List_tas) -> atom_concat(sudah,'.',Temp6);
 	 atom_concat(belum,'.',Temp6)),
 	write(Tulis,Temp6),nl(Tulis),
-	
+
 	(isMember('dvd_2', List_tas) -> atom_concat(sudah,'.',Temp7);
 	 atom_concat(belum,'.',Temp7)),
 	write(Tulis,Temp7),nl(Tulis),
 
 	(isMember('dvd_3', List_tas) -> atom_concat(sudah,'.',Temp8);
 	 atom_concat(belum,'.',Temp8)),
-	write(Tulis,Temp8),nl(Tulis),	
+	write(Tulis,Temp8),nl(Tulis),
 
 	(isMember('laptop', List_tas) -> atom_concat(sudah,'.',Temp9);
 	 atom_concat(belum,'.',Temp9)),
@@ -495,6 +592,42 @@ save(X):-
 
 	(isMember('kunci_gembok', List_tas) -> atom_concat(sudah,'.',Temp10);
 	 atom_concat(belum,'.',Temp10)),
+	write(Tulis,Temp10),nl(Tulis),
+
+	(isMember('puisi', List_tas) -> atom_concat(sudah,'.',Temp11);
+	 atom_concat(belum,'.',Temp11)),
+	write(Tulis,Temp10),nl(Tulis),
+
+	(isMember('mawar', List_tas) -> atom_concat(sudah,'.',Temp11);
+	 atom_concat(belum,'.',Temp12)),
+	write(Tulis,Temp10),nl(Tulis),
+
+	(isMember('darah_manusia', List_tas) -> atom_concat(sudah,'.',Temp11);
+	 atom_concat(belum,'.',Temp13)),
+	write(Tulis,Temp10),nl(Tulis),
+
+	(isMember('lock_melter', List_tas) -> atom_concat(sudah,'.',Temp11);
+	 atom_concat(belum,'.',Temp14)),
+	write(Tulis,Temp10),nl(Tulis),
+
+	(isMember('medicine', List_tas) -> atom_concat(sudah,'.',Temp11);
+	 atom_concat(belum,'.',Temp15)),
+	write(Tulis,Temp10),nl(Tulis),
+
+	(isMember('tengkorak_kucing', List_tas) -> atom_concat(sudah,'.',Temp11);
+	 atom_concat(belum,'.',Temp16)),
+	write(Tulis,Temp10),nl(Tulis),
+
+	(isMember('jarum_suntik', List_tas) -> atom_concat(sudah,'.',Temp11);
+	 atom_concat(belum,'.',Temp17)),
+	write(Tulis,Temp10),nl(Tulis),
+
+	(isMember('botol_semprot', List_tas) -> atom_concat(sudah,'.',Temp11);
+	 atom_concat(belum,'.',Temp18)),
+	write(Tulis,Temp10),nl(Tulis),
+
+	(isMember('buku_resep', List_tas) -> atom_concat(sudah,'.',Temp11);
+	 atom_concat(belum,'.',Temp19)),
 	write(Tulis,Temp10),nl(Tulis),
 
 	pemain(Makanan, Stress),
@@ -507,68 +640,102 @@ save(X):-
 	score(Nilai),
 	write(Tulis,Nilai),write(Tulis,'.'),nl(Tulis),
 
-	
+	keran(Keran),
+	write(Tulis,Keran),write(Tulis,'.'),nl(Tulis),
 
-	close(Tulis).
+	npc(arwah,SQuest),
+	write(Tulis,SQuest),write(Tulis,'.'),nl(Tulis),
 
+	close(Tulis),
+	write('Save berhasil !'),nl.
 
 
 loadf(X):-
 	open(X,read,Str),
 	%lokasi sekarang
 	read(Str,Rekam1),
-		retract(lokasi_sekarang(A)),
+		retract(lokasi_sekarang(_)),
 		asserta(lokasi_sekarang(Rekam1)),
-	
+
 	%kunci
 	read(Str,Rekam2),
-		retract(lock(gembok, B1)),
+		retract(lock(gembok, _)),
 		asserta(lock(gembok, Rekam2)),
 	read(Str,Rekam3),
-		retract(lock(pin, B2)),
+		retract(lock(pin, _)),
 		asserta(lock(pin, Rekam3)),
 	read(Str,Rekam4),
-		retract(lock(password, B3)),
+		retract(lock(password, _)),
 		asserta(lock(password, Rekam4)),
 	read(Str,Rekam5),
-		retract(lock(rantai, B4)),
+		retract(lock(rantai, _)),
 		asserta(lock(rantai, Rekam5)),
 
-	%isi tas
-	retractall(isi_tas(List_tas1)),
+	%isi_tas
+	retractall(isi_tas(_)),
 	asserta(isi_tas([])),
 
 	isi_tas(List_tas2),
 	read(Str,Rekam6),
 		(Rekam6 == sudah -> append(['dvd_1'], List_tas2, New_List_tas);append([], List_tas2, New_List_tas)),
 	read(Str,Rekam7),
-		(Rekam7 == sudah -> append(['dvd_2'], New_List_tas1, New_List_tas2);append([], New_List_tas, New_List_tas2)),
+		(Rekam7 == sudah -> append(['dvd_2'], New_List_tas, New_List_tas2);append([], New_List_tas, New_List_tas2)),
 	read(Str,Rekam8),
 		(Rekam8 == sudah -> append(['dvd_3'], New_List_tas2, New_List_tas3);append([], New_List_tas2, New_List_tas3)),
 	read(Str,Rekam9),
 		(Rekam9 == sudah -> append(['laptop'], New_List_tas3, New_List_tas4);append([], New_List_tas3, New_List_tas4)),
 	read(Str,Rekam10),
-		(Rekam10 == sudah -> append(['kunci_gembok'], New_List_tas4, New_List_tas5);append([], New_List_tas4, New_List_tas5)),
+		(Rekam10 == sudah -> append(['kunci_gembok'], New_List_tas3, New_List_tas4);append([], New_List_tas3, New_List_tas4)),
+	read(Str,Rekam11),
+		(Rekam11 == sudah -> append(['puisi'], New_List_tas4, New_List_tas5);append([], New_List_tas4, New_List_tas5)),
+	read(Str,Rekam12),
+		(Rekam12 == sudah -> append(['mawar'], New_List_tas4, New_List_tas5);append([], New_List_tas4, New_List_tas5)),
+	read(Str,Rekam13),
+		(Rekam13 == sudah -> append(['darah_manusia'], New_List_tas4, New_List_tas5);append([], New_List_tas4, New_List_tas5)),
+	read(Str,Rekam14),
+		(Rekam14 == sudah -> append(['lock_melter'], New_List_tas4, New_List_tas5);append([], New_List_tas4, New_List_tas5)),
+	read(Str,Rekam15),
+		(Rekam15 == sudah -> append(['medicine'], New_List_tas4, New_List_tas5);append([], New_List_tas4, New_List_tas5)),
+	read(Str,Rekam16),
+		(Rekam16 == sudah -> append(['tengkorak_kucing'], New_List_tas4, New_List_tas5);append([], New_List_tas4, New_List_tas5)),
+	read(Str,Rekam17),
+		(Rekam17 == sudah -> append(['jarum_suntik'], New_List_tas4, New_List_tas5);append([], New_List_tas4, New_List_tas5)),
+	read(Str,Rekam18),
+		(Rekam18 == sudah -> append(['botol_semprot'], New_List_tas4, New_List_tas5);append([], New_List_tas4, New_List_tas5)),
+	read(Str,Rekam19),
+		(Rekam19 == sudah -> append(['buku_resep'], New_List_tas4, New_List_tas5);append([], New_List_tas4, New_List_tas5)),
+
 	retract(isi_tas(List_tas2)),
 	asserta(isi_tas(New_List_tas5)),
 
 	%pemain
-	retract(pemain(C1, C2)),
-	read(Str, Rekam11),
-	read(Str, Rekam12),
-	asserta(pemain(Rekam11, Rekam12)),
-	
-	%jumlah langkah
-	retract(langkah(Step)),
-	read(Str, Rekam13),
-	asserta(langkah(Rekam13)),
+	retract(pemain(_,_)),
+	read(Str, Rekam20),
+	read(Str, Rekam21),
+	asserta(pemain(Rekam20, Rekam21)),
+
+	%jumlah_langkah
+	retract(langkah(_)),
+	read(Str, Rekam22),
+	asserta(langkah(Rekam22)),
 
 	%skor
-	retract(score(Nilai)),
-	read(Str, Rekam14),
-	asserta(score(Rekam14)),
+	retract(score(_)),
+	read(Str, Rekam23),
+	asserta(score(Rekam23)),
 
-	close(Str).
+	%keran
+	retract(keran(_)),
+	read(Str, Rekam24),
+	asserta(keran(Rekam24)),
+
+	%arwah
+	retract(npc(arwah,_)),
+	read(Str, Rekam25),
+	asserta(npc(arwah,Rekam25)),
+
+	close(Str),
+	write('Load berhasil !'),nl.
 
 /*
 bisa_diambil('dvd_1', bisa).
@@ -579,21 +746,26 @@ bisa_diambil('kunci_gembok', bisa).
 
 terletak(['papan_tulis', 'dvd_1'], 'kelas_1A').
 terletak(['dvd_3'], laci).
-terletak(['dvd_2'], 'tempat_sampah').
 terletak([laptop], 'multimedia').
+terletak(['dvd_2'], 'tempat_sampah').
 terletak(['kunci_gembok'], 'piala_emas').
 
-:- dynamic(lokasi_sekarang/1). !
-:- dynamic(lock/2). !
+:- dynamic(lokasi_sekarang/1).
+:- dynamic(lock/2).
 :- dynamic(isi_tas/1).
+:- dynamic(terletak/2).
 :- dynamic(pemain/2).
 :- dynamic(langkah/1).
 :- dynamic(score/1).
-:- dynamic(terletak/2).
+:- dynamic(gabungan/2).
+:- dynamic(keran/1).
+:- dynamic(campuran_kimia/1).
+:- dynamic(npc/2).
+
 */
 
 %-------------------------------------------------------------------------------------------------
-%PERIKSA PERIKSA PERIKSA 
+%PERIKSA PERIKSA PERIKSA
 
 	periksa('papan_tulis'):-
 	lokasi_sekarang('kelas_1B'),
@@ -663,7 +835,7 @@ terletak(['kunci_gembok'], 'piala_emas').
 		lokasi_sekarang(gudang),
 		terletak([], laci),
 		write('Sudah tidak ada apa-apa di laci'),nl,nl.
-		
+
 	periksa(kucing):-
 		lokasi_sekarang('kelas_1B'),
 		write('Kucing berwarna hitam terlihat sedang bersantai di atas meja guru...'),nl,
@@ -707,41 +879,102 @@ terletak(['kunci_gembok'], 'piala_emas').
 		(lock(pin,terkunci) -> write('PIN'),nl ; lock(pin,terbuka)),
 		(lock(password,terkunci) -> write('Password'),nl ; lock(password,terbuka)),
 		(lock(rantai,terkunci) -> write('Rantai'),nl ; lock(rantai,terbuka)).
-			
+
+	periksa(loker_1):-
+		lokasi_sekarang(laboratorium),
+		write('loker ini terkunci dengan kuat.'), nl,nl.
+
+	periksa(loker_2):-
+		lokasi_sekarang(laboratorium),
+		terletak([jarum_suntik, botol_semprot], loker_2),
+
+		write('Di dalam loker ini ada jarum_suntik dan botol_semprot.'),nl,
+		write('Kamu memutuskan untuk megambilnya untuk berjaga-jaga'),nl,nl,
+		goto(loker_2),
+		ambil(jarum_suntik),
+		ambil(botol_semprot),
+		goto(laboratorium).
+
+	periksa(loker_3):-
+		lokasi_sekarang(laboratorium),
+		write('loker ini terkunci dengan kuat.'), nl,nl.
+
+	periksa(loker_4):-
+		lokasi_sekarang(laboratorium),
+		terletak([buku_resep], loker_4),
+		write('Di dalam loker ini terdapat buku resep ramuan yang dibuat oleh seorang guru.'),nl,
+		write('Buku ini kelihatannya sudah tua, tapi tulisannya masih terbaca. Kamu memutuskan '),nl,
+		write('untuk menyimpannya'),nl,
+		goto(loker_4),
+		ambil(buku_resep),
+		goto(laboratorium),
+		nl.
+
+	periksa(wastafel):-
+		lokasi_sekarang(laboratorium),
+		keran(X),
+		X =< 4,
+		write('Wastafel ini terlihat bersih dengan warna putih mengkilap. Sepertinya masih bisa digunakan juga.'),nl,
+		write('Dinding di atas wastafel terdapat tulisan besar "5" berwarna merah'),nl,nl.
+
+	periksa(wastafel):-
+		lokasi_sekarang(laboratorium),
+		keran(X),
+		X >= 5,
+		write('Sekarang wastafel ini berwarna merah dan berbau darah segar...'),nl,nl.
+
+	periksa(loker_5):-
+		lokasi_sekarang(laboratorium),
+		terletak([tengkorak_kucing], loker_5),
+		write('Di dalam loker ini ada sebuah tengkorak kucing berwarna putih bersih. Kamu sebenarnya'),nl,
+		write('tidak peduli dengan terngkorak tersebut, tetapi entah kenapa kamu ingin menyimpannya.'),nl,
+		goto(loker_5),
+		ambil(tengkorak_kucing),
+		goto(laboratorium),
+		nl.
+
+	periksa(meja_lab):-
+		lokasi_sekarang(laboratorium),
+		write('Pada meja lab terdapat seperangkat PERALATAN_KIMIA lengkap dengan berbagai macam zat kimia.'),nl,nl.
+
+	periksa(peralatan_kimia):-
+		lokasi_sekarang(laboratorium),
+		write('Petunjuk penggunaan: campurkan 2 zat kimia dan 1 zat pelarut untuk menghasilkan ramuan.'), nl,nl.
+
 	periksa(_):-
 		write('Tidak ada barang seperti itu di sini...'), nl.
 
 		dekati(laci):-
-			retract(lokasi_sekarang(X)),
+			retract(lokasi_sekarang(_)),
 			asserta(lokasi_sekarang('laci')).
 		dekati('piala_emas'):-
-			retract(lokasi_sekarang(X)),
+			retract(lokasi_sekarang(_)),
 			asserta(lokasi_sekarang('piala_emas')).
 		dekati('tempat_sampah'):-
-			retract(lokasi_sekarang(X)),
+			retract(lokasi_sekarang(_)),
 			asserta(lokasi_sekarang('tempat_sampah')),
 			write('Kamu mendekati tempat_sampah...'),nl,nl.
 
 		kembali:-
 			lokasi_sekarang('laci'),
-			retract(lokasi_sekarang(X)),
+			retract(lokasi_sekarang(_)),
 			asserta(lokasi_sekarang('gudang')).
 
 
 		kembali:-
 			lokasi_sekarang('piala_emas'),
-			retract(lokasi_sekarang(X)),
+			retract(lokasi_sekarang(_)),
 			asserta(lokasi_sekarang('ruang_kepala_sekolah')).
 
 
 		kembali:-
 			lokasi_sekarang('tempat_sampah'),
-			retract(lokasi_sekarang(X)),
+			retract(lokasi_sekarang(_)),
 			asserta(lokasi_sekarang('parkiran')),
 			write('Kamu kembali ke parkiran...'),nl,nl.
 
 
-	
+
 %-------------------------------------------------------------------------------------------------
 
 /* MAP */
@@ -801,19 +1034,19 @@ peta(_) :-
 
 lihat_sekitar:-
 	lokasi_sekarang(X),
-	write('Saat ini ada di: '), nl,
-	tab(2),write(X),nl,
+	write('Saat ini kamu berada di: '), nl,
+	write(X),nl,nl,
 	write('Di sini ada: '),nl,
 	daftar_objek(X),
-	daftar_npc(X),
-	write('Dari sini bisa ke: '),nl,
-	write('Utara 	: '), daftar_tujuan(X,n),nl,
-	write('Selatan : '), daftar_tujuan(X,s),nl,
-	write('Barat 	: '), daftar_tujuan(X,w),nl,
-	write('Timur 	: '), daftar_tujuan(X,e),nl,
-	write('Atas 	: '), daftar_tujuan(X,u),nl,
-	write('Bawah 	: '), daftar_tujuan(X,d),nl.
-	
+	daftar_npc(X),nl,
+	write('Dari sini kamu bisa ke: '),nl,
+	write('Utara (n)   : '), daftar_tujuan(X,n),nl,
+	write('Selatan (s) : '), daftar_tujuan(X,s),nl,
+	write('Barat (w)   : '), daftar_tujuan(X,w),nl,
+	write('Timur (e)   : '), daftar_tujuan(X,e),nl,
+	write('Atas (u)    : '), daftar_tujuan(X,u),nl,
+	write('Bawah (d)   : '), daftar_tujuan(X,d),nl,nl.
+
 
 daftar_objek(X):-
 	terletak(List, X),
@@ -825,13 +1058,13 @@ daftar_tujuan(X,Arah):-
 
 daftar_npc(X):-
 	npc(Nama, X),
-	tab(2),write(Nama),nl,
-	fail.	
+	write(Nama),nl,
+	fail.
 daftar_npc(_).
 
 tulis_list([]).
 tulis_list([H|T]):-
-	tab(2), write(H), nl,
+	write(H), nl,
 	tulis_list(T).
 
 tulis_list_h([]).
@@ -844,9 +1077,8 @@ tulis_list_h([H|T]):-
 %NAVIGASI MAP
 
 goto(X):-
-	retract(lokasi_sekarang(Y)),
-	asserta(lokasi_sekarang(X)),
-	lihat_sekitar.
+	retract(lokasi_sekarang(_)),
+	asserta(lokasi_sekarang(X)).
 
 n:- pindah_ke(n).
   %s ada di paling bawah.
@@ -859,8 +1091,8 @@ pindah_ke(Arah):-
 	lokasi_sekarang(X),
 	jalan(X, Arah, List),
 	write('Kamu bisa ke:'),nl,
-	tulis_list(List),
-	write('Ketik mau ke mana (ketik "batal." untuk tidak jadi pergi kemananapun): '), read(Input),
+	tulis_list(List),nl,
+	nl,write('Ketik mau ke mana (ketik "batal." untuk tidak jadi pergi kemananapun): '), read(Input),
 	input_tujuan(Input, Arah).
 
 
@@ -868,8 +1100,8 @@ input_tujuan(exit, s):-
 	lokasi_sekarang(halaman),
 	score(4),
 
-	retract(lokasi_sekarang(X)),
-	asserta(lokasi_sekarang(Input)),!.
+	retract(lokasi_sekarang(_)),
+	asserta(lokasi_sekarang(_)),!.
 input_tujuan(exit,s):-
 	write('Gerbang masih terkunci...'),nl,nl.
 
@@ -891,19 +1123,19 @@ input_tujuan(A, B):-
 	jalan(A,B,[]),
 	write('Tidak bisa ke sana...'),nl,
 	write('Coba lagi: '), read(X),
-	input_tujuan(X, Arah).
+	input_tujuan(X,_).
 
-isMember(X,[X|T]).
-isMember(X,[H|T]):-
+isMember(X,[X|_]).
+isMember(X,[_|T]):-
 	isMember(X,T).
 
 
 %-------------------------------------------------------------------------------------------------
 %Manipulasi lokasi barang
 lihat_tas:-
-	write('Isi tas saat ini:'),nl,nl,
+	write('Isi tas saat ini:'),nl,
 	isi_tas(List),
-	tulis_list(List),nl.
+	tulis_list(List),nl,nl.
 
 ambil(X):-
 	lokasi_sekarang(Place),
@@ -921,6 +1153,12 @@ ambil(X):-
 ambil(X):-
 	bisa_diambil(X, tidak),
 	write(X),write(' tidak bisa diambil...'),nl,nl.
+
+add(X):-
+	isi_tas(List_tas),
+	append([X], List_tas, New_List_tas),
+	retract(isi_tas(List_tas)),
+	asserta(isi_tas(New_List_tas)).
 
 drop(X):-
 	lokasi_sekarang(Place),
@@ -950,7 +1188,7 @@ gabung('dvd_1', laptop):-
 	isi_tas(List_tas),
 	isMember('dvd_1', List_tas),
 	isMember(laptop, List_tas),
-	retract(gabungan(X,laptop)),
+	retract(gabungan(_,laptop)),
 	asserta(gabungan('dvd_1',laptop)),
 	write('Kamu memasukkan DVD 1 ke dalam laptop'),nl,nl.
 
@@ -958,7 +1196,7 @@ gabung('dvd_2', laptop):-
 	isi_tas(List_tas),
 	isMember('dvd_2', List_tas),
 	isMember(laptop, List_tas),
-	retract(gabungan(X,laptop)),
+	retract(gabungan(_,laptop)),
 	asserta(gabungan('dvd_2',laptop)),
 	write('Kamu memasukkan DVD 2 ke dalam laptop'),nl,nl.
 
@@ -966,7 +1204,7 @@ gabung('dvd_3', laptop):-
 	isi_tas(List_tas),
 	isMember('dvd_3', List_tas),
 	isMember(laptop, List_tas),
-	retract(gabungan(X,laptop)),
+	retract(gabungan(_,laptop)),
 	asserta(gabungan('dvd_3',laptop)),
 	write('Kamu memasukkan DVD 3 ke dalam laptop'),nl,nl.
 
@@ -974,7 +1212,7 @@ gabung(laptop, 'dvd_1'):-
 	isi_tas(List_tas),
 	isMember('dvd_1', List_tas),
 	isMember(laptop, List_tas),
-	retract(gabungan(X,laptop)),
+	retract(gabungan(_,laptop)),
 	asserta(gabungan('dvd_1',laptop)),
 	write('Kamu memasukkan DVD 1 ke dalam laptop'),nl,nl.
 
@@ -982,7 +1220,7 @@ gabung(laptop, 'dvd_2'):-
 	isi_tas(List_tas),
 	isMember('dvd_2', List_tas),
 	isMember(laptop, List_tas),
-	retract(gabungan(X,laptop)),
+	retract(gabungan(_,laptop)),
 	asserta(gabungan('dvd_2',laptop)),
 	write('Kamu memasukkan DVD 2 ke dalam laptop'),nl,nl.
 
@@ -990,9 +1228,26 @@ gabung(laptop, 'dvd_3'):-
 	isi_tas(List_tas),
 	isMember('dvd_3', List_tas),
 	isMember(laptop, List_tas),
-	retract(gabungan(X,laptop)),
+	retract(gabungan(_,laptop)),
 	asserta(gabungan('dvd_3',laptop)),
 	write('Kamu memasukkan DVD 3 ke dalam laptop'),nl,nl.
+
+gabung(jarum_suntik, wastafel):-
+	isi_tas(List),
+	keran(5),
+	lokasi_sekarang(laboratorium),
+	isMember(jarum_suntik, List),
+	add(darah_manusia),
+	write('Berhasil menyimpan darah_manusia ke dalam suntik.'),nl,nl.
+
+gabung(wastafel, jarum_suntik):-
+	isi_tas(List),
+	keran(5),
+	lokasi_sekarang(laboratorium),
+	isMember(jarum_suntik, List),
+	add(darah_manusia),
+	write('Berhasil menyimpan darah_manusia ke dalam suntik.'),nl,nl.
+
 
 gabung(_,_):-
 	write('Tidak bisa menggabung kedua benda itu...'),nl,nl.
@@ -1003,6 +1258,7 @@ ambil(_):-
 del(X,[X|Tail],Tail).
 del(X,[Y|Tail],[Y|Tail1]):-
     del(X,Tail,Tail1).
+
 %-------------------------------------------------------------------------------------------------
 pemain(2,0).
 
@@ -1019,39 +1275,41 @@ minta_hint:-
 jawaban_kucing(Answer):-
 	(Answer == y ; Answer == Y),
 	lock(gembok, terkunci),
-	write('"Kunci pertama ada di...", jawab kucing.'), nl,
+	write('"Kunci pertama ada di...", jawab kucing.'), nl,nl,
 	retract(pemain(Food,Stress)),
 	decrement(Food,Food1),
 	asserta(pemain(Food1,Stress)).
 jawaban_kucing(Answer):-
 	(Answer == y ; Answer == Y),
 	lock(pin, terkunci),
-	write('"Mungkin kau perlu perhatikan papan_tulis... siapa tahu'),nl,
-	write('ada jawabannya disana.", jawab kucing.'), nl,
+	write('"Mungkin kamu perlu perhatikan papan_tulis... siapa tahu'),nl,
+	write('ada jawabannya disana.", jawab kucing.'), nl,nl,
 	retract(pemain(Food,Stress)),
 	decrement(Food,Food1),
 	asserta(pemain(Food-1,Stress)).
 jawaban_kucing(Answer):-
 	(Answer == y ; Answer == Y),
 	lock(password, terkunci),
-	write('"Mungkin kau perlu perhatikan LAPTOP... siapa tahu'),nl,
-	write('ada jawabannya disana.", jawab kucing.'), nl,
+	write('"Mungkin kamu perlu perhatikan LAPTOP... siapa tahu'),nl,
+	write('ada jawabannya disana.", jawab kucing.'), nl,nl,
 	retract(pemain(Food,Stress)),
 	decrement(Food,Food1),
 	asserta(pemain(Food-1,Stress)).
 jawaban_kucing(Answer):-
 	(Answer == y ; Answer == Y),
 	lock(rantai, terkunci),
-	write('"Mungkin kau perlu perhatikan PELAJARAN KIMIA... siapa tahu'),nl,
-	write('ada jawabannya disana.", jawab kucing.'), nl,
+	write('"Bukankah kamu sudah belajar KIMIA?'), nl,
+	write('Kemana saja kamu? Tidur?'), nl,
+	write('Coba ingat-ingat kembali pelajaran KIMIA... siapa tahu'),nl,
+	write('ada jawabannya disana.", jawab kucing.'), nl,nl,
 	retract(pemain(Food,Stress)),
 	decrement(Food,Food1),
 	asserta(pemain(Food-1,Stress)).
 jawaban_kucing(Answer):-
 	(Answer == n ; Answer == N),
-	write('"Sayang sekali... Mungkin lain kali.", jawab kucing.'),nl.
+	write('"Sayang sekali... Mungkin lain kali.", jawab kucing.'),nl,nl.
 jawaban_kucing(_):-
-	write('Si kucing bingung dengan jawabanmu...'),nl,
+	write('Si kucing bingung dengan jawabanmu...'),nl,nl,
 	minta_hint.
 
 decrement(X,X1):-
@@ -1069,10 +1327,8 @@ stress_increase:-
 
 stress_decrease:-
 	pemain(Food,Stress),
-	Stress > 0,
-	retract(pemain(Food,Stress)),
-	Stress1 is Stress-20,
-	asserta(pemain(Food,Stress1)).
+	(Stress > 0 ->	retract(pemain(Food,Stress)), Stress1 is Stress-20,	asserta(pemain(Food,Stress1)) ;
+	 true).
 
 %-------------------------------------------------------------------------------------------------
 %Stats pemain
@@ -1081,7 +1337,7 @@ stat:-
 	pemain(A,B),
 	score(Score),
 	write('Statusmu saat ini:'),nl,
-	write('Jumlah kunci yang dibuka:'), write(Score),nl,
+	write('Jumlah kunci yang dibuka: '), write(Score),nl,
 	write('Jumlah langkah: '), write(X),nl,
 	write('Jumlah makanan kucing: '), write(A), nl,
 	write('Tingkat stress: '), write(B),write('%'),nl,nl.
@@ -1108,17 +1364,123 @@ use(laptop):-
 use(laptop):-
 	gabungan(X, laptop),
 	X == 'dvd_3',
-	write('hint: seorang ibu terpaksa melahirkan tidak pada waktunya sebanyak 13 kali...'),nl,nl.
+	write('hint: seorang ibu terpaksa melahirkan tidak pada waktunya,'),nl,
+	write('sehingga ia harus dioperasi sebanyak 13 kali...'),nl,nl.
 
 use(laptop):-
 	gabungan(kosong, laptop),
 	write('Layar laptop tidak tampil apa-apa... Mungkin laptop ini perlu dimasukkan sesuatu terlebih'),nl,
 	write('dahulu...'),nl,nl.
 
+use(wastafel):-
+	lokasi_sekarang(laboratorium),
+	keran(X),
+	X =< 4,
+	write('Kamu menyalakan keran air wastafel. Air yang dingin mengalir keluar. Kamu segera menutup kerannya kembali.'),nl,nl,
+	increment(X,X1),
+	retract(keran(X)),
+	asserta(keran(X1)).
 
+use(wastafel):-
+	lokasi_sekarang(laboratorium),
+	keran(X),
+	X>=5,
+	write('Kamu menyalakan keran air wastafel. Tiba-tiba wastafel mengeluarkan cairan berwarna merah. Setelah kamu'),nl,
+	write('lihat lagi ternyata yang dikeluarkan adalah darah. Kamu segera mematikan kerannya.'),nl,nl.
+
+use(buku_resep):-
+	isi_tas(List_tas),
+	isMember(buku_resep, List_tas),
+	write('Ada 4 resep yang bisa kamu baca dari buku ini, tetapi tulisan nama dan penjelasannya rusak dicorat-coret.'),nl,nl,
+	write('Resep 1: '),nl,
+	write('  -sodium_hydroxide'),nl,
+	write('  -cyanuric_acid'),nl,
+	write('  -distilled_water'),nl,nl,
+	write('Resep 2: '),nl,
+	write('  -sodium_hydroxide'),nl,
+	write('  -darah_manusia'),nl,
+	write('  -boiled_water'),nl,nl,
+	write('Resep 3: '),nl,
+	write('  -darah_manusia'),nl,
+	write('  -cyanuric_acid'),nl,
+	write('  -boiled_water'),nl,nl,
+	write('Resep 4: '),nl,
+	write('  -darah_manusia'),nl,
+	write('  -ferrous_sulfate'),nl,
+	write('  -distilled_water'),nl,nl.
+
+use(peralatan_kimia):-
+	lokasi_sekarang(laboratorium),
+	isi_tas(List_tas),
+	write('Petunjuk penggunaan: campurkan 2 zat kimia dan 1 zat pelarut untuk menghasilkan ramuan.'), nl,
+	isMember(botol_semprot, List_tas),
+	retractall(campuran_kimia(_)),
+	asserta(campuran_kimia([])),
+	chem_minigame,
+	hasil_kimia,
+	write('Kamu menyimpan hasilnya ke dalam botol_semprot.'),nl,nl.
+
+use(peralatan_kimia):-
+	lokasi_sekarang(laboratorium),
+	write('Sepertinya kamu bisa membuat campuran kimia di sini, tetapi kamu tidak punya tempat untuk'),nl,
+	write('menyimpan hasilnya.'),nl,nl.
 
 use(_):-
-	write('Tidak ada barang seperti itu...'),nl,nl.
+	write('Tidak bisa.'),nl,nl.
+
+chem_minigame:-
+	write('List zat kimia yang ada: '),nl,
+	write('1. sodium_hydroxide'),nl,
+	write('2. cyanuric_acid'),nl,
+	write('3. ferrous_sulfate'),nl,nl,
+
+	write('List pelarut yang ada: '),nl,
+	write('1. distilled_water'),nl,
+	write('2. boiled_water'),nl,nl,
+
+	write('Masukkan zat 1: '), add_kimia,nl,
+	write('Masukkan zat 2: '), add_kimia,nl,
+	write('Masukkan pelarut: '), add_kimia,nl.
+
+add_kimia:-
+	list_kimia(List),
+	campuran_kimia(Campuran),
+	isi_tas(List_tas),
+	repeat,
+		read(X),
+		((isMember(X,List) -> append([X], Campuran, New_Campuran), retract(campuran_kimia(Campuran)), asserta(campuran_kimia(New_Campuran))) ;
+		(X == darah_manusia, isMember(darah_manusia,List_tas)  ->  append([X], Campuran, New_Campuran), retract(campuran_kimia(Campuran)), asserta(campuran_kimia(New_Campuran)));
+		(write('Tidak ada zat kimia seperti itu.'),nl, true)),
+	(isMember(X, List) ; isMember(X,List_tas)).
+
+hasil_kimia:-
+	campuran_kimia(List),
+	isMember(sodium_hydroxide, List),
+	isMember(darah_manusia, List),
+	isMember(boiled_water, List),
+	isi_tas(List_tas),
+	append([lock_melter], List_tas, New_List_tas),
+	retract(isi_tas(List_tas)),
+	asserta(isi_tas(New_List_tas)),
+	write('Kamu berhasil membuat lock_melter'),nl,nl,!.
+
+hasil_kimia:-
+	campuran_kimia(List),
+	isMember(darah_manusia, List),
+	isMember(cyanuric_acid, List2),
+	isMember(boiled_water, List2),
+	isi_tas(List_tas),
+	append([medicine], List_tas, New_List_tas),
+	retract(isi_tas(List_tas)),
+	asserta(isi_tas(New_List_tas)),
+	write('Kamu berhasil membuat medicine'),nl,nl,!.
+
+hasil_kimia:-
+	add(zat_kimia_misterius),
+	write('Kamu berhasil membuat, sesuatu...'),nl,nl.
+
+
+
 
 %-------------------------------------------------------------------------------------------------
 
@@ -1197,7 +1559,7 @@ unlock(X):-
 	asserta(score(Score1)),
 
 	write('Gembok terbuka!'),nl,nl.
-	
+
 unlock(X):-
 	lock(X, Y),
 	X == gembok,
@@ -1205,6 +1567,33 @@ unlock(X):-
 	Place = 'halaman',
 	Y == terkunci,
 	write('Tidak punya kunci apapun...'),nl,nl.
+
+unlock(X):-
+	lock(X, Y),
+	pemain(_,Stress),
+	Stress < 100,
+	X == rantai,
+	lokasi_sekarang(Place),
+	Place = 'halaman',
+	Y == terkunci,
+	isi_tas(List_tas),
+	isMember('lock_melter', List_tas),
+	retract(lock(rantai, terkunci)),
+	asserta(lock(rantai, terbuka)),
+
+	retract(score(Score)),
+	increment(Score,Score1),
+	asserta(score(Score1)),
+
+	write('Gembok terbuka!'),nl,nl.
+
+unlock(X):-
+	lock(X, Y),
+	X == rantai,
+	lokasi_sekarang(Place),
+	Place = 'halaman',
+	Y == terkunci,
+	write('Tidak bisa melakukan apa-apa...'),nl,nl.
 
 unlock(_):-
 	pemain(_,Stress),
@@ -1256,4 +1645,3 @@ s:- pindah_ke(s).
 
 		http://stackoverflow.com/questions/22774477/read-the-whole-fact-from-external-file
 */
-
